@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Intesa Sanpaolo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23006B3F' width='100' height='100' rx='20'/%3E%3Ctext x='50' y='68' font-size='50' fill='white' font-family='Arial' font-weight='bold' text-anchor='middle'%3EISP%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ==================== WELCOME SCREEN ==================== -->
+    <div id="welcome-screen" class="screen active">
+      <div class="welcome-container">
+        <div class="welcome-top"></div>
+        <div class="welcome-content">
+          <div class="welcome-logo">
+            <img
+              src="img/isp.png"
+              alt="Intesa Sanpaolo"
+              class="isp-logo-image"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';"
+            >
+            <div class="isp-logo-badge" style="display:none;">
+              <span class="isp-logo-word">intesa</span>
+              <span class="isp-logo-word">sanpaolo</span>
+            </div>
+          </div>
+          <p class="welcome-greeting" id="welcome-greeting">Benvenuto</p>
+          <button class="btn-entra" onclick="goToPinScreen('client')">ENTRA</button>
+          <button class="btn-admin-link" onclick="goToPinScreen('admin')">Accesso Filiale</button>
+        </div>
+        <div class="welcome-bottom">
+          <div class="welcome-actions">
+            <div class="welcome-action-item">
+              <div class="welcome-action-icon">
+                <span class="material-icons-round">smartphone</span>
+              </div>
+              <span>Prelievo Cardless</span>
+            </div>
+            <div class="welcome-action-item">
+              <div class="welcome-action-icon">
+                <span class="material-icons-round">payment</span>
+              </div>
+              <span>BANCOMAT Pay®</span>
+            </div>
+            <div class="welcome-action-item">
+              <div class="welcome-action-icon">
+                <span class="material-icons-round">more_horiz</span>
+              </div>
+              <span>Altro</span>
+            </div>
+          </div>
+          <button class="btn-emergenze">Emergenze</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PIN SCREEN ==================== -->
+    <div id="pin-screen" class="screen">
+      <div class="pin-container">
+        <div class="pin-header">
+          <div class="pin-title">Inserisci <strong>Pin</strong></div>
+          <div class="pin-dots" id="pin-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div id="pin-error" class="pin-error hidden">PIN non valido</div>
+        </div>
+        <div class="pin-keypad">
+          <button class="key" onclick="pinPress('1')">1</button>
+          <button class="key" onclick="pinPress('2')">2</button>
+          <button class="key" onclick="pinPress('3')">3</button>
+          <button class="key" onclick="pinPress('4')">4</button>
+          <button class="key" onclick="pinPress('5')">5</button>
+          <button class="key" onclick="pinPress('6')">6</button>
+          <button class="key" onclick="pinPress('7')">7</button>
+          <button class="key" onclick="pinPress('8')">8</button>
+          <button class="key" onclick="pinPress('9')">9</button>
+          <button class="key key-empty"></button>
+          <button class="key" onclick="pinPress('0')">0</button>
+          <button class="key key-del" onclick="pinDelete()">
+            <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10.5 1H24.5C25.6 1 26.5 1.9 26.5 3V19C26.5 20.1 25.6 21 24.5 21H10.5C9.7 21 9 20.6 8.6 19.9L1.5 11L8.6 2.1C9 1.4 9.7 1 10.5 1Z" stroke="#333" stroke-width="1.5" fill="none"/>
+              <path d="M20 7L14 13M14 7L20 13" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="pin-footer">
+          <p class="pin-forgot">Hai dimenticato il tuo PIN?</p>
+          <a class="pin-recover">Recupera PIN</a>
+        </div>
+        <div class="pin-cancel">
+          <button class="btn-annulla" onclick="backToWelcome()">Annulla</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MAIN DASHBOARD (CONTI) ==================== -->
+    <div id="dashboard-screen" class="screen">
+      <div class="dash-full-scroll">
+      <div class="dash-header">
+        <div class="dash-header-row">
+          <h1 class="dash-title">Conti</h1>
+          <div class="dash-header-actions">
+            <div class="dash-header-btn">
+              <span class="material-icons-round">search</span>
+              <span class="dash-header-btn-label">Cerca</span>
+            </div>
+            <div class="dash-header-btn">
+              <span class="material-icons-round">help_outline</span>
+              <span class="dash-header-btn-label">Aiuto</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account card on gradient -->
+      <div class="dash-gradient-area">
+        <div class="account-carousel" id="account-carousel">
+          <div class="account-track" id="account-track"></div>
+        </div>
+        <div class="account-dots" id="account-dots"></div>
+      </div>
+
+      <template id="account-card-template">
+        <div class="account-slide">
+          <div class="account-card">
+            <div class="account-card-top">
+              <div class="account-piano"></div>
+              <div class="account-conto"></div>
+              <div class="account-saldo-row">
+                <span class="account-saldo"></span>
+                <div class="account-hide-btn" onclick="toggleSaldoVisibility()">
+                  <svg width="32" height="18" viewBox="0 0 32 18" fill="none"><path d="M2 9C2 9 7 1 16 1C25 1 30 9 30 9C30 9 25 17 16 17C7 17 2 9 2 9Z" stroke="#1A73E8" stroke-width="1.5"/><circle cx="16" cy="9" r="4" stroke="#1A73E8" stroke-width="1.5"/></svg>
+                  <span class="hide-label"></span>
+                </div>
+              </div>
+              <a class="account-dettagli">Dettagli</a>
+            </div>
+            <div class="account-card-divider"></div>
+            <div class="account-iban-row">
+              <span class="account-iban"></span>
+              <div class="account-condividi">
+                <span class="material-icons-round">ios_share</span>
+                <span>Condividi</span>
+              </div>
+            </div>
+            <div class="account-salvadanaio">
+              <span class="salvadanaio-label">isySalvadanaio</span>
+              <span class="salvadanaio-amount">0,00 € <span class="material-icons-round" style="font-size:16px;vertical-align:middle">chevron_right</span></span>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Content -->
+
+        <!-- Movimenti / Operazioni -->
+        <div class="section-operazioni">
+          <div class="section-row">
+            <h2 class="section-title-main">Operazioni</h2>
+            <a class="section-link" id="toggle-movimenti-link" onclick="toggleMovimenti()">Visualizza tutte <span class="material-icons-round" style="font-size:16px;vertical-align:middle">chevron_right</span></a>
+          </div>
+          <div id="movimenti-list" class="movimenti-container">
+            <!-- Injected -->
+          </div>
+        </div>
+
+        <!-- Analisi delle spese -->
+        <div class="section-analisi">
+          <div class="section-row">
+            <h2 class="section-title-main">Analisi delle spese</h2>
+            <a class="section-link">Vai alla sezione <span class="material-icons-round" style="font-size:16px;vertical-align:middle">chevron_right</span></a>
+          </div>
+          <div class="analisi-card">
+            <div class="analisi-period">MESE CORRENTE</div>
+            <div class="analisi-row">
+              <span class="analisi-label">Entrate</span>
+              <span class="analisi-value" id="analisi-entrate">0,00 €</span>
+            </div>
+            <div class="analisi-bar analisi-bar-green" id="bar-entrate"><div></div></div>
+            <div class="analisi-row">
+              <span class="analisi-label">Uscite</span>
+              <span class="analisi-value" id="analisi-uscite">0,00 €</span>
+            </div>
+            <div class="analisi-bar analisi-bar-red" id="bar-uscite"><div></div></div>
+          </div>
+        </div>
+
+        <div style="height:100px"></div>
+
+      </div><!-- end dash-full-scroll -->
+
+      <!-- Chat FAB -->
+      <div class="chat-fab" onclick="logout()">
+        <span class="material-icons-round">logout</span>
+      </div>
+
+      <!-- Bottom nav -->
+      <div class="bottom-nav">
+        <div class="nav-item active">
+          <div class="nav-icon-wrap">
+            <span class="material-icons-round">account_balance</span>
+          </div>
+          <span class="nav-label">Conti</span>
+        </div>
+        <div class="nav-item">
+          <span class="material-icons-round">credit_card</span>
+          <span class="nav-label">Carte</span>
+        </div>
+        <div class="nav-item">
+          <span class="material-icons-round">euro</span>
+          <span class="nav-label">Operazioni</span>
+        </div>
+        <div class="nav-item">
+          <span class="material-icons-round">more_horiz</span>
+          <span class="nav-label">Altro</span>
+          <span class="nav-badge">41</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MOVIMENTO DETAIL SCREEN ==================== -->
+    <div id="movimento-detail-screen" class="screen">
+      <div class="mov-detail-page">
+        <div class="mov-detail-header">
+          <button class="mov-detail-back" onclick="backFromMovimentoDettaglio()">
+            <span class="material-icons-round">chevron_left</span>
+            <span>Indietro</span>
+          </button>
+          <h2>Dettaglio operazione</h2>
+          <div class="mov-detail-help">
+            <span class="material-icons-round">help_outline</span>
+            <span>Aiuto</span>
+          </div>
+        </div>
+
+        <div class="mov-detail-body">
+          <div class="mov-detail-icon-wrap">
+            <span id="det-page-icon" class="material-icons-round">receipt_long</span>
+          </div>
+          <div id="det-page-category" class="mov-detail-category">DOMICILIAZIONI E UTENZE</div>
+          <div id="det-page-importo" class="mov-detail-importo">-29,40 €</div>
+
+          <div class="mov-detail-mainline">
+            <span id="det-page-descrizione">Pagamento COMUNE DI GENOVA</span>
+            <span id="det-page-day">OGGI</span>
+          </div>
+
+          <p id="det-page-extra" class="mov-detail-extra">Nome Azienda Comune Di Genova Codice Azienda</p>
+
+          <button class="mov-detail-link"><span class="material-icons-round">add</span> AGGIUNGI NOTA</button>
+          <button class="mov-detail-link"><span class="material-icons-round">add</span> AGGIUNGI ALLEGATO</button>
+          <button class="mov-detail-link"><span class="material-icons-round">add</span> AGGIUNGI ETICHETTA</button>
+        </div>
+
+        <div class="mov-detail-bottom-actions">
+          <button class="mov-detail-action-btn">
+            <span class="material-icons-round">edit</span>
+            <span>Modifica</span>
+          </button>
+          <button class="mov-detail-action-btn">
+            <span class="material-icons-round">ios_share</span>
+            <span>Condividi</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== ADMIN DASHBOARD ==================== -->
+    <div id="admin-screen" class="screen">
+      <div class="admin-top-bar">
+        <div class="admin-top-left">
+          <h1 class="admin-main-title">Gestione Filiale</h1>
+        </div>
+        <button class="admin-logout-btn" onclick="logout()">
+          <span class="material-icons-round">logout</span>
+        </button>
+      </div>
+
+      <div class="admin-body">
+        <!-- Client list view -->
+        <div id="admin-clienti-view">
+          <div class="admin-sec-header">
+            <h3>Clienti</h3>
+            <button class="admin-add-btn" onclick="showAddClientModal()">
+              <span class="material-icons-round">person_add</span>
+              Nuovo Cliente
+            </button>
+          </div>
+          <div id="admin-clienti-list" class="admin-clients-list"></div>
+        </div>
+
+        <!-- Client detail view -->
+        <div id="admin-client-detail" class="hidden">
+          <button class="admin-back-btn" onclick="backToClientList()">
+            <span class="material-icons-round">arrow_back_ios</span> Clienti
+          </button>
+
+          <div class="admin-detail-card">
+            <div class="admin-detail-avatar" id="admin-detail-initials">GT</div>
+            <h2 id="admin-detail-nome">Giacomo Tronconi</h2>
+            <p class="admin-detail-sub" id="admin-detail-pin">PIN: 12345</p>
+            <div class="admin-conto-select-wrap">
+              <label for="admin-conto-select">IBAN selezionato</label>
+              <select id="admin-conto-select" onchange="onAdminContoChange()"></select>
+            </div>
+            <div class="admin-iban-edit-wrap">
+              <label for="admin-iban-input">Modifica IBAN conto selezionato</label>
+              <input type="text" id="admin-iban-input" placeholder="Inserisci nuovo IBAN">
+              <div class="admin-iban-actions">
+                <button class="admin-inline-btn" onclick="saveAdminIban()">Salva IBAN</button>
+                <button id="btn-add-second-conto" class="admin-inline-btn admin-inline-btn-secondary" onclick="showAddSecondContoModal()">Aggiungi secondo conto</button>
+              </div>
+            </div>
+            <p class="admin-detail-sub" id="admin-detail-conto">Conto: 1000/00940819</p>
+            <p class="admin-detail-sub" id="admin-detail-iban">IT11H0338501601100000940819</p>
+            <div class="admin-detail-saldo">
+              <span>Saldo</span>
+              <span class="admin-saldo-amount" id="admin-detail-saldo">€ 821,42</span>
+            </div>
+          </div>
+
+          <div class="admin-sec-header" style="margin-top:20px">
+            <h3>Movimenti</h3>
+            <button class="admin-add-btn" onclick="showAddMovimentoModal()">
+              <span class="material-icons-round">add</span>
+              Nuovo
+            </button>
+          </div>
+          <div id="admin-movimenti-list" class="movimenti-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    <div id="modal-add-client" class="modal-overlay hidden">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <h3 class="modal-title">Nuovo Cliente</h3>
+        <div class="modal-field">
+          <label>Nome</label>
+          <input type="text" id="new-client-nome" placeholder="Nome">
+        </div>
+        <div class="modal-field">
+          <label>Cognome</label>
+          <input type="text" id="new-client-cognome" placeholder="Cognome">
+        </div>
+        <div class="modal-field">
+          <label>Saldo iniziale (€)</label>
+          <input type="number" id="new-client-saldo" placeholder="0.00" step="0.01">
+        </div>
+        <div class="modal-buttons">
+          <button class="modal-btn-cancel" onclick="closeModal('modal-add-client')">Annulla</button>
+          <button class="modal-btn-primary" onclick="addClient()">Crea</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-add-movimento" class="modal-overlay hidden">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <h3 class="modal-title">Nuovo Movimento</h3>
+        <div class="modal-field">
+          <label>Tipo</label>
+          <select id="mov-tipo">
+            <option value="accredito">Accredito (+)</option>
+            <option value="addebito">Addebito (-)</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Importo (€)</label>
+          <input type="number" id="mov-importo" placeholder="0.00" step="0.01" min="0.01">
+        </div>
+        <div class="modal-field">
+          <label>Descrizione</label>
+          <input type="text" id="mov-descrizione" placeholder="es. Stipendio, Affitto...">
+        </div>
+        <div class="modal-field">
+          <label>Categoria</label>
+          <select id="mov-categoria">
+            <option value="Stipendio">Stipendio</option>
+            <option value="Bonifico">Bonifico</option>
+            <option value="Pagamento">Pagamento</option>
+            <option value="Casa">Casa</option>
+            <option value="Alimentari">Alimentari</option>
+            <option value="Trasporti">Trasporti</option>
+            <option value="Intrattenimento">Intrattenimento</option>
+            <option value="Ristorazione">Ristorazione</option>
+            <option value="Salute">Salute</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Utenze">Utenze</option>
+            <option value="Altro">Altro</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Stato</label>
+          <select id="mov-stato">
+            <option value="completato">Completato</option>
+            <option value="in_corso">In corso</option>
+          </select>
+        </div>
+        <div class="modal-buttons">
+          <button class="modal-btn-cancel" onclick="closeModal('modal-add-movimento')">Annulla</button>
+          <button class="modal-btn-primary" onclick="addMovimento()">Aggiungi</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-add-second-conto" class="modal-overlay hidden">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <h3 class="modal-title">Aggiungi secondo conto</h3>
+        <div class="modal-field">
+          <label>IBAN</label>
+          <input type="text" id="second-conto-iban" placeholder="es. IT60X0542811101000000123456">
+        </div>
+        <div class="modal-field">
+          <label>Saldo iniziale (€)</label>
+          <input type="number" id="second-conto-saldo" placeholder="0.00" step="0.01" min="0">
+        </div>
+        <div class="modal-buttons">
+          <button class="modal-btn-cancel" onclick="closeModal('modal-add-second-conto')">Annulla</button>
+          <button class="modal-btn-primary" onclick="createSecondContoAdmin()">Crea conto</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-confirm" class="modal-overlay hidden">
+      <div class="modal-sheet modal-sheet-sm">
+        <h3 class="modal-title" id="confirm-title">Conferma</h3>
+        <p class="modal-text" id="confirm-text"></p>
+        <div class="modal-buttons">
+          <button class="modal-btn-cancel" onclick="closeModal('modal-confirm')">Annulla</button>
+          <button class="modal-btn-danger" id="btn-confirm-action">Elimina</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden">
+      <span id="toast-text"></span>
+    </div>
+
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
