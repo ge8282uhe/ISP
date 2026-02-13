@@ -23,6 +23,32 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+let dbStatus = { ok: false, error: null, ready: false };
+
+// Health check — non richiede DB
+app.get('/health', async (req, res) => {
+  let dbTest = 'not tested';
+  try {
+    const [rows] = await pool.query('SELECT 1 AS ping');
+    dbTest = 'connected';
+  } catch (err) {
+    dbTest = err.message;
+  }
+  res.json({
+    status: 'running',
+    node: process.version,
+    db: dbTest,
+    dbStatus,
+    env: {
+      DB_HOST: process.env.DB_HOST || '(default localhost)',
+      DB_PORT: process.env.DB_PORT || '(default 3306)',
+      DB_NAME: process.env.DB_NAME || '(default isp)',
+      DB_USER: process.env.DB_USER || '(default root)',
+      PORT: process.env.PORT || '(default 3000)'
+    }
+  });
+});
+
 function generatePin() {
   return String(Math.floor(10000 + Math.random() * 90000));
 }
@@ -758,17 +784,22 @@ app.use((error, req, res, next) => {
 });
 
 async function start() {
+  // Avvia server PRIMA di tutto, così Passenger/proxy non danno 503
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server ISP avviato su porta ${PORT}`);
+  });
+
+  // Poi prova a connettere il DB
   try {
     await ensureSchema();
     await seedData();
+    dbStatus = { ok: true, error: null, ready: true };
     console.log('DB connesso, tabelle OK, seed OK');
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server ISP (MySQL): http://0.0.0.0:${PORT}`);
-    });
   } catch (error) {
-    console.error('Errore avvio server:', error.message);
+    dbStatus = { ok: false, error: error.message, ready: false };
+    console.error('ERRORE DB:', error.message);
     console.error(error.stack);
-    process.exit(1);
+    // NON fare process.exit — il server resta su per diagnostica via /health
   }
 }
 
