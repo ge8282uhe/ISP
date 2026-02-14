@@ -6,6 +6,15 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+// Catch unhandled errors to prevent crash
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION:', err.message);
+  console.error(err.stack);
+});
+process.on('unhandledRejection', (err) => {
+  console.error('UNHANDLED REJECTION:', err.message || err);
+});
+
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 
@@ -785,9 +794,13 @@ app.use((error, req, res, next) => {
 
 async function start() {
   // Avvia server PRIMA di tutto, così Passenger/proxy non danno 503
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server ISP avviato su porta ${PORT}`);
-  });
+  try {
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server ISP avviato su porta ${PORT}`);
+    });
+  } catch (listenErr) {
+    console.error('ERRORE LISTEN:', listenErr.message);
+  }
 
   // Poi prova a connettere il DB
   try {
